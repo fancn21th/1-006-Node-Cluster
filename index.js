@@ -1,21 +1,31 @@
-const os = require("os");
+const { cpus } = require("os");
 const cluster = require("cluster");
 const server = require("./server");
 
 var app = {};
+
+const numCPUs = cpus().length;
 
 app.init = function (callback) {
   // without cluster
   // server.init();
 
   // with cluster
-  if (cluster.isMaster) {
+  if (cluster.isPrimary) {
+    console.log(`Primary ${process.pid} is running`);
+
     // Fork the process
-    for (var i = 0; i < os.cpus().length; i++) {
+    for (var i = 0; i < numCPUs; i++) {
       cluster.fork();
     }
+
+    cluster.on("exit", (worker, code, signal) => {
+      console.log(`worker ${worker.process.pid} died`);
+    });
   } else {
     server.init();
+
+    console.log(`Worker ${process.pid} started`);
   }
 };
 
