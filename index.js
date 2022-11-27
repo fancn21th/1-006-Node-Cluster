@@ -11,8 +11,9 @@ app.init = function (callback) {
   // server.init();
 
   // with cluster
-  if (cluster.isPrimary) {
-    console.log(`Primary ${process.pid} is running`);
+  // CAUTION: isMaster is deprecated in NODE 19 and I am testing it against node 14
+  if (cluster.isMaster) {
+    console.log(`Master ${process.pid} is running`);
 
     // Fork the process
     for (var i = 0; i < numCPUs; i++) {
@@ -24,8 +25,6 @@ app.init = function (callback) {
     });
   } else {
     server.init();
-
-    console.log(`Worker ${process.pid} started`);
   }
 };
 

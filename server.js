@@ -14,7 +14,9 @@ server.httpServer = http.createServer((req, res) => {
 
 server.init = function (params) {
   server.httpServer.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
+    console.log(
+      `Worker ${process.pid} started and Server running at http://${hostname}:${port}/`
+    );
   });
 };
 
