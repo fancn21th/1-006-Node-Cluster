@@ -4,9 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "loadtest http://localhost:3000/ -t 20 -c 10"
   },
   "keywords": [],
   "author": "fancn21th <fancn21th@aliyun.com> (http://fancn21th.cn/)",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "loadtest": "5.2.0"
+  }
 }

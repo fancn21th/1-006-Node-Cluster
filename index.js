@@ -1,16 +1,22 @@
-const http = require("http");
+const os = require("os");
+const cluster = require("cluster");
+const server = require("./server");
 
-const hostname = "127.0.0.1";
-const port = 3000;
-let count = 1;
+var app = {};
 
-const server = http.createServer((req, res) => {
-  console.log("VISIT:", count++);
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "text/plain");
-  res.end(`Hello ${req.headers["user-agent"]}`);
-});
+app.init = function (callback) {
+  if (cluster.isMaster) {
+    // Fork the process
+    for (var i = 0; i < os.cpus().length; i++) {
+      cluster.fork();
+    }
+  } else {
+    server.init();
+  }
+};
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
+if (require.main === module) {
+  app.init(function () {});
+}
+
+module.exports = app;
